@@ -1,0 +1,41 @@
+% Sample sEMG data for the biceps brachii muscle
+% Sample time vector (in seconds)
+t = 0.001:0.001:5; % 5 seconds duration, 1000 Hz sampling rate, starting from 0.001 sec
+
+% Sample EMG signal (replace with your actual EMG data)
+% Generating a sinusoidal signal as a placeholder
+f = 10; % Frequency of the sinusoidal signal (in Hz)
+emg_signal = sin(2*pi*f*t); 
+
+% Plot the EMG signal
+figure;
+plot(t, emg_signal);
+xlabel('Time (s)');
+ylabel('EMG Signal Amplitude');
+title('Surface EMG Signal for Biceps Brachii');
+
+% Parameter 1: Amplitude of EMG Signal
+amplitude = max(emg_signal);
+fprintf('Amplitude of EMG Signal: %f\n', amplitude);
+
+% Parameter 2: Onset of Muscle Activation
+baseline_threshold = 0.1; % Set a threshold for baseline activity
+onset_index = find(emg_signal > baseline_threshold, 1, 'first');
+onset_time = t(onset_index);
+fprintf('Onset of Muscle Activation: %f seconds\n', onset_time);
+
+% Parameter 3: Monitoring for Muscle Fatigue
+% Threshold for detecting muscle fatigue (adjust as needed)
+fatigue_threshold = 0.5; % Define a threshold for significant fatigue
+
+% Time point at which muscle fatigue occurs
+fatigue_index = find(emg_signal < fatigue_threshold * amplitude, 1, 'first');
+if ~isempty(fatigue_index)
+    fatigue_time = t(fatigue_index);
+    fprintf('Muscle Fatigue detected at %f seconds.\n', fatigue_time);
+else
+    fprintf('Muscle Fatigue not detected.\n');
+end
+
+OUTPUT:
+Diag
