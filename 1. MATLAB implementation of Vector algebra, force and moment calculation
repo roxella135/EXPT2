@@ -1,0 +1,45 @@
+% Define vectors A and B
+A = [1; 2; 3]; % Example vector A
+B = [4; 5; 6]; % Example vector B
+
+% Vector algebra
+sum_vector = A + B; % Vector addition
+dot_product = dot(A, B); % Dot product
+cross_product = cross(A, B); % Cross product
+
+% Display results
+disp('Vector Algebra:');
+disp(['Vector A: ', num2str(A')]);
+disp(['Vector B: ', num2str(B')]);
+disp(['Sum of vectors A and B: ', num2str(sum_vector')]);
+disp(['Dot product of A and B: ', num2str(dot_product)]);
+disp(['Cross product of A and B: ', num2str(cross_product')]);
+
+% Force calculation
+force = norm(A); % Magnitude of vector A can be considered as force
+% Display force
+disp('Force Calculation:');
+disp(['Magnitude of force: ', num2str(force)]);
+
+% Moment calculation
+moment_arm = [2; 3; 1]; % Example moment arm vector
+moment = cross(moment_arm, force * A); % Moment = moment_arm x force
+% Display moment
+disp('Moment Calculation:');
+disp(['Moment arm vector: ', num2str(moment_arm')]);
+disp(['Moment: ', num2str(moment')]);
+
+Output:
+Vector Algebra:
+Vector A: 1  2  3
+Vector B: 4  5  6
+Sum of vectors A and B: 5  7  9
+Dot product of A and B: 32
+Cross product of A and B: -3  6 -3
+
+Force Calculation:
+Magnitude of force: 3.7417
+
+Moment Calculation:
+Moment arm vector: 2  3  1
+Moment: 26.1916     -18.7083      3.74166
