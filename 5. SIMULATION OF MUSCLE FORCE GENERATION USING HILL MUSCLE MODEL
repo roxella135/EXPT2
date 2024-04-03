@@ -1,0 +1,57 @@
+% Hill muscle model parameters
+Fmax = 1000;    % Maximum isometric force of the muscle (N)
+Lslack = 0.1;   % Slack length of the muscle (m)
+Lceopt = 0.09;  % Optimal length of the muscle (m)
+vmax = 10;      % Maximum contraction velocity of the muscle (m/s)
+
+% Initial conditions
+Lce = 0.1;      % Initial length of the muscle (m)
+Lcedot = 0;     % Initial velocity of the muscle (m/s)
+
+% Time parameters
+t_start = 0;
+t_end = 1;
+dt = 0.01;
+t = t_start:dt:t_end;
+
+% Activation input
+t_act_start = 0.1;
+t_act_end = 0.5;
+activation = zeros(size(t));
+activation(t >= t_act_start & t <= t_act_end) = 1;
+
+% Muscle force calculation
+force = zeros(size(t));
+for i = 1:length(t)
+    if Lce < Lslack
+        F = 0;
+    elseif Lce >= Lslack && Lce <= Lceopt
+        F = Fmax * ((Lce - Lslack) / (Lceopt - Lslack));
+    else
+        F = Fmax * exp(-((Lce - Lceopt) / (0.1 * Lceopt))^2);
+    end
+    
+    force(i) = F;
+    
+    Lcedot = vmax * (activation(i) - F / Fmax);
+    Lce = Lce + Lcedot * dt;
+end
+
+% Plotting the results
+figure;
+subplot(2, 1, 1);
+plot(t, activation, 'b', 'LineWidth', 2);
+xlabel('Time (s)');
+ylabel('Activation');
+title('Muscle Activation');
+
+subplot(2, 1, 2);
+plot(t, force, 'r', 'LineWidth', 2);
+xlabel('Time (s)');
+ylabel('Force (N)');
+title('Muscle Force');
+
+
+
+OUTPUT:
+Diag
