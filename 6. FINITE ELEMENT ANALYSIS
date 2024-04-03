@@ -1,0 +1,50 @@
+N = 3;
+model = createpde(N);
+importGeometry(model,'BracketWithHole.stl');
+figure
+pdegplot(model,'FaceLabels','on');
+view(30,30);
+title('Bracket with Face Labels')
+figure
+pdegplot(model,'FaceLabels','on');
+view(-134,-32)
+title('Bracket with Face Labels, Rear View')
+applyBoundaryCondition(model,'Face',3,'u',[0,0,0]);
+distributedLoad = 1e4;
+applyBoundaryCondition(model,'Face',6,'g',[0,0,-distributedLoad]);
+E = 200e9;
+nu = 0.3;
+c = elasticityC3D(E,nu);
+a = 0;
+f = [0;0;0];
+bracketThickness = 1e-2;
+hmax = bracketThickness;
+generateMesh(model,'Hmax',hmax,'GeometricOrder','quadratic');
+figure
+pdeplot3D(model);
+title('Mesh with Quadratic Tetrahedral Elements');
+u = assempde(model,c,a,f);
+u3 = reshape(u,[],3);
+minUz = min(u3(:,3));
+fprintf('Largest deflection in the z-direction is %g meters.\n', minUz);
+warning('off','MATLAB:triangulation:PtsNotInTriWarnId');
+[p,~,t] = model.Mesh.meshToPet();
+tr = triangulation(model.Mesh.Elements(1:4,:)',p');
+warning('on','MATLAB:triangulation:PtsNotInTriWarnId');
+[tri xf] = freeBoundary(tr);
+tr = triangulation(tri,xf);
+px = xf(:,1);
+py = xf(:,2);
+pz = xf(:,3);
+fe = tr.featureEdges(pi/3);
+fe = fe';
+labels = ['x','y','z'];
+for i=1:3
+    figure
+    pdeplot3D(model,'colormapdata',abs(u3(:,i)));
+    title([labels(i),'-displacement']);
+    hold on
+    plot3(px(fe), py(fe), pz(fe), '-k');
+    hold off
+end
+displayEndOfDemoMessage(mfilename)
