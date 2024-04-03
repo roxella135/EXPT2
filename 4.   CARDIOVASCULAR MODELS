@@ -1,0 +1,85 @@
+% Parameters
+    heart_rate = 75; % beats per minute
+    systolic_pressure = 120; % mmHg
+    diastolic_pressure = 80; % mmHg
+    total_blood_volume = 5000; % mL
+    stroke_volume = 70; % mL per beat
+    vascular_resistance = 17.5; % mmHg per L per minute
+ 
+    % Simulation settings
+    simulation_time = 10; % minutes
+    time_step = 0.01; % minutes
+ 
+    % Initialize variables
+    time = 0:time_step:simulation_time;
+    num_steps = length(time);
+    cardiac_output = zeros(1, num_steps);
+    arterial_pressure = zeros(1, num_steps);
+    venous_pressure = zeros(1, num_steps);
+    blood_volume = zeros(1, num_steps);
+    venous_return = zeros(1, num_steps);
+ 
+    % Initial conditions
+    cardiac_output(1) = stroke_volume * heart_rate / 1000; % L per minute
+    arterial_pressure(1) = systolic_pressure;
+    venous_pressure(1) = diastolic_pressure;
+    blood_volume(1) = total_blood_volume;
+ 
+    % Simulation loop
+    for i = 2:num_steps
+        % Calculate venous return
+        venous_return(i) = (systolic_pressure - venous_pressure(i-1)) / vascular_resistance;
+ 
+        % Update blood volume
+        blood_volume(i) = blood_volume(i-1) + (venous_return(i) - cardiac_output(i-1)) * time_step;
+ 
+        % Update cardiac output
+        cardiac_output(i) = stroke_volume * heart_rate / 1000; % L per minute
+ 
+        % Update arterial pressure
+        arterial_pressure(i) = cardiac_output(i) * vascular_resistance + diastolic_pressure;
+ 
+        % Update venous pressure
+        venous_pressure(i) = diastolic_pressure;
+ 
+        % Check for negative blood volume (not realistic, but for demonstration)
+        if blood_volume(i) < 0
+            blood_volume(i) = 0;
+            cardiac_output(i) = 0;
+            arterial_pressure(i) = 0;
+            venous_pressure(i) = 0;
+        end
+    end
+ 
+    % Plot results
+    figure;
+    subplot(4,1,1);
+    plot(time, cardiac_output);
+    title('Cardiac Output');
+    xlabel('Time (min)');
+    ylabel('Cardiac Output (L/min)');
+    
+    subplot(4,1,2);
+    plot(time, arterial_pressure);
+    title('Arterial Pressure');
+    xlabel('Time (min)');
+    ylabel('Arterial Pressure (mmHg)');
+    
+    subplot(4,1,3);
+    plot(time, venous_pressure);
+    title('Venous Pressure');
+    xlabel('Time (min)');
+    ylabel('Venous Pressure (mmHg)');
+    
+    subplot(4,1,4);
+    plot(time, blood_volume);
+    title('Blood Volume');
+    xlabel('Time (min)');
+    ylabel('Blood Volume (mL)');
+ 
+"end"
+
+
+
+Output:
+Diag
