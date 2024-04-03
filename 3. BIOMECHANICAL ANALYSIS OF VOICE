@@ -1,0 +1,39 @@
+matlab
+% Load voice signal from file
+[y, Fs] = audioread('voice_sample.wav'); % Assuming voice sample is in a WAV file
+
+% Plot waveform
+t = (0:length(y)-1) / Fs;
+figure;
+plot(t, y);
+title('Waveform of Voice Signal');
+xlabel('Time (s)');
+ylabel('Amplitude');
+
+% Calculate fundamental frequency (pitch) using autocorrelation method
+[~, f0] = pitch(y, Fs);
+
+% Plot fundamental frequency (pitch) contour
+figure;
+plot(t, f0);
+title('Fundamental Frequency (Pitch) Contour');
+xlabel('Time (s)');
+ylabel('Frequency (Hz)');
+
+% Calculate and plot spectrogram
+window_length = 0.03; % Window length in seconds
+overlap_ratio = 0.5; % Overlap ratio
+window = hamming(round(window_length * Fs), 'periodic');
+noverlap = round(overlap_ratio * length(window));
+nfft = 2^nextpow2(length(window));
+[S, F, T] = spectrogram(y, window, noverlap, nfft, Fs, 'yaxis');
+figure;
+imagesc(T, F, 10*log10(abs(S)));
+axis xy;
+title('Spectrogram of Voice Signal');
+xlabel('Time (s)');
+ylabel('Frequency (Hz)');
+colorbar;
+
+Output:
+Diag
